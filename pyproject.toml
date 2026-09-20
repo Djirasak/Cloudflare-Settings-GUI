@@ -16,6 +16,7 @@ dependencies = [
 
 [project.scripts]
 cloudflare-settings-gui = "cloudflare_settings_gui:main"
+cfgui = "cloudflare_settings_gui:main"
 
 [build-system]
 requires = ["uv_build>=0.12.17,<0.13.0"]
