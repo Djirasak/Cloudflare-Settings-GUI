@@ -11,7 +11,8 @@
   `QPushButton`s, and even auto-sized `QLabel`s (its reported font ascent is
   too tight for its own combining marks — same clipping with Google's CDN
   font files, so it's not specific to the source), fixed with extra vertical
-  padding on all three
+  padding on all three. `QPushButton` needed a lopsided top-heavy padding
+  (18px top / 10px bottom) — even padding still clipped the mark in practice
 - Custom frameless, resizable main window with drag-to-move, edge resizing, and
   Windows Aero Snap (drag to the top edge to maximize, left/right edge to split
   the screen)
