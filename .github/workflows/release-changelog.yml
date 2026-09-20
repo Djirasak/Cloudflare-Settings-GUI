@@ -1,0 +1,37 @@
+name: Update changelog on release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Update CHANGELOG.md
+        env:
+          RELEASE_DATE: ${{ github.event.release.published_at }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          DATE="${RELEASE_DATE%%T*}"
+          python scripts/update_changelog.py "$VERSION" "$DATE"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git diff --cached --quiet && exit 0
+          git commit -m "Update changelog for ${GITHUB_REF_NAME}"
+          git push origin HEAD:main
