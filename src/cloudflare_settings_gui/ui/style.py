@@ -6,8 +6,60 @@ QWidget {
     font-size: 14px;
 }
 
+QWidget#rootWindow {
+    background: transparent;
+}
+
+QLabel {
+    background-color: transparent;
+}
+
+QFrame#windowCard {
+    background-color: #1a1d22;
+    border: 1px solid #2a2e35;
+    border-radius: 16px;
+}
+
+QFrame#titleBar,
+QWidget#page {
+    background-color: transparent;
+    border: none;
+}
+
+QFrame#titleBar {
+    border-bottom: 1px solid #22252b;
+}
+
+QLabel#titleText {
+    color: #b7bcc4;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+QPushButton#windowButton,
+QPushButton#windowCloseButton {
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #9aa0a8;
+    font-size: 13px;
+    font-weight: 400;
+    padding: 0px;
+}
+
+QPushButton#windowButton:hover {
+    background-color: #262a31;
+    color: #e6e8eb;
+}
+
+QPushButton#windowCloseButton:hover {
+    background-color: #e5484d;
+    color: #ffffff;
+}
+
 QLabel#title {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
     color: #f6821f;
 }
@@ -15,6 +67,12 @@ QLabel#title {
 QLabel#subtitle {
     color: #9aa0a8;
     font-size: 13px;
+}
+
+QLabel#fieldLabel {
+    color: #9aa0a8;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 QLabel#status {
@@ -35,10 +93,10 @@ QLabel#statusPending {
 }
 
 QLineEdit {
-    background-color: #1e2126;
-    border: 1px solid #2a2e35;
-    border-radius: 8px;
-    padding: 10px 12px;
+    background-color: #21242a;
+    border: 1px solid #2f333b;
+    border-radius: 10px;
+    padding: 11px 14px;
     color: #e6e8eb;
     selection-background-color: #f6821f;
 }
@@ -51,8 +109,8 @@ QPushButton {
     background-color: #f6821f;
     color: #14161a;
     border: none;
-    border-radius: 8px;
-    padding: 10px 18px;
+    border-radius: 10px;
+    padding: 11px 18px;
     font-weight: 600;
 }
 
@@ -72,7 +130,7 @@ QPushButton:disabled {
 QPushButton#secondary {
     background-color: transparent;
     color: #e6e8eb;
-    border: 1px solid #2a2e35;
+    border: 1px solid #2f333b;
 }
 
 QPushButton#secondary:hover {
@@ -81,9 +139,9 @@ QPushButton#secondary:hover {
     background-color: transparent;
 }
 
-QFrame#card {
-    background-color: #1a1d22;
-    border: 1px solid #2a2e35;
-    border-radius: 14px;
+QPushButton#secondary:disabled {
+    background-color: transparent;
+    border: 1px solid #22252b;
+    color: #5b6069;
 }
 """
