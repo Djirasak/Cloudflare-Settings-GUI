@@ -1,3 +1,5 @@
+import sys
+
 import keyring
 import keyring.errors
 
@@ -21,3 +23,14 @@ def clear_credentials() -> None:
             keyring.delete_password(SERVICE_NAME, field)
         except keyring.errors.PasswordDeleteError:
             pass
+
+
+def clear_saved_credentials_cli() -> None:
+    """Entry point for the `cleanup` console script."""
+    clear_credentials()
+    # Windows terminals often default to a legacy codepage (e.g. cp1252) that can't
+    # encode Thai text, crashing a plain print() — reconfigure to UTF-8 first so this
+    # works from cmd.exe, PowerShell, or a double-clicked .bat file alike.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    print("ล้างข้อมูลที่จดจำไว้ใน Windows Credential Manager เรียบร้อยแล้ว")

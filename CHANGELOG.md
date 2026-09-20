@@ -25,6 +25,9 @@
 - Changelog automation — `scripts/update_changelog.py` renames `[Unreleased]`
   to `[version] - date` on publish, via a GitHub Actions workflow that pulls
   the version and date straight from the GitHub release
+- `cleanup` console script (and a double-click `cleanup.bat` for
+  convenience) to wipe saved keyring credentials — needed whenever `.env` is
+  updated, since a saved keyring value otherwise takes priority over it
 
 ### Changed
 
@@ -34,6 +37,8 @@
 - Renamed `AuthenticationPage` → `PermissionConfigPage`,
   `LoadingPage` → `PermissionLoadingPage`, `HelloPage` → `MainPage` to reflect
   what each screen actually does
+- Renamed the `cfgui` console script to `dev`, and added `cleanup` alongside
+  it for the credential-clearing script above
 
 ### Fixed
 
@@ -42,6 +47,9 @@
   window and kept it only on fixed-size popups
 - A native crash risk from unparented `QTimer.singleShot` callbacks firing
   after their owning widget had already been destroyed
+- `cleanup` crashed with `UnicodeEncodeError` on Windows terminals using a
+  legacy codepage (cmd.exe, some Git Bash setups) because its confirmation
+  message is in Thai — fixed by reconfiguring stdout to UTF-8 first
 
 ### Known limitations
 

@@ -17,7 +17,8 @@ dependencies = [
 
 [project.scripts]
 cloudflare-settings-gui = "cloudflare_settings_gui:main"
-cfgui = "cloudflare_settings_gui:main"
+dev = "cloudflare_settings_gui:main"
+cleanup = "cloudflare_settings_gui.credentials:clear_saved_credentials_cli"
 
 [build-system]
 requires = ["uv_build>=0.12.17,<0.13.0"]

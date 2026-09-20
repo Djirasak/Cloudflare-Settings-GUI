@@ -46,7 +46,7 @@ Requires [uv](https://docs.astral.sh/uv/) and Python 3.13.
 git clone https://github.com/Djirasak/Cloudflare-Settings-GUI.git
 cd Cloudflare-Settings-GUI
 uv sync
-uv run cfgui
+uv run dev
 ```
 
 ### Optional: skip retyping credentials in dev
@@ -56,7 +56,11 @@ cp .env.example .env
 # then fill in CLOUDFLARE_EMAIL, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN
 ```
 
-`.env` is git-ignored — it's for local convenience only. Check "จดจำข้อมูลนี้ไว้ในเครื่องนี้" in the app to persist credentials to the OS keyring instead.
+`.env` is git-ignored — it's for local convenience only. Check "จดจำข้อมูลนี้ไว้ในเครื่องนี้" in the app to persist credentials to the OS keyring instead — but note that saved keyring credentials take priority over `.env`, so if you update `.env` and the app keeps using old values, clear the keyring first:
+
+```bash
+uv run cleanup
+```
 
 ## 🧪 Development
 
