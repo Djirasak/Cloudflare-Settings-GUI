@@ -12,6 +12,7 @@ QWidget#rootWindow {
 
 QLabel {
     background-color: transparent;
+    padding-top: 4px;
 }
 
 QFrame#windowCard {
