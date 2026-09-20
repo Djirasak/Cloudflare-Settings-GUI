@@ -2,7 +2,7 @@ import sys
 
 from dotenv import load_dotenv
 from PyQt6.QtCore import QTimer
-from PyQt6.QtGui import QIcon
+from PyQt6.QtGui import QFontDatabase, QIcon
 from PyQt6.QtWidgets import QApplication
 
 from cloudflare_settings_gui.credentials import load_credentials
@@ -15,10 +15,16 @@ from cloudflare_settings_gui.ui.pages.permission_loading.permission_loading_page
 from cloudflare_settings_gui.ui.style import build_stylesheet
 
 
+def _load_fonts() -> None:
+    for weight in ("Regular", "SemiBold", "Bold"):
+        QFontDatabase.addApplicationFont(str(resource_path("assets", "fonts", f"Sarabun-{weight}.ttf")))
+
+
 def main() -> None:
     load_dotenv()
 
     app = QApplication(sys.argv)
+    _load_fonts()
     check_icon_path = str(resource_path("assets", "check_mark.svg")).replace("\\", "/")
     app.setStyleSheet(build_stylesheet(check_icon_path))
     app.setWindowIcon(QIcon(str(resource_path("assets", "cloudflare_mark.svg"))))

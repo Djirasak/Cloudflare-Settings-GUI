@@ -2,7 +2,7 @@ _APP_STYLESHEET_TEMPLATE = """
 QWidget {
     background-color: #14161a;
     color: #e6e8eb;
-    font-family: "Segoe UI", "Inter", sans-serif;
+    font-family: "Sarabun", "Segoe UI", "Inter", sans-serif;
     font-size: 14px;
 }
 
