@@ -31,6 +31,7 @@ class PermissionLoadingPage(QWidget):
         layout.addWidget(spinner)
         layout.addWidget(label)
 
+        # TODO: wire in the real Cloudflare verification call here instead of this mock delay.
         self._timer = QTimer(self)
         self._timer.setSingleShot(True)
         self._timer.timeout.connect(self.finished.emit)

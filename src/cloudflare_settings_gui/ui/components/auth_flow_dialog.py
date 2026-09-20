@@ -23,6 +23,20 @@ class AuthFlowDialog(QDialog):
 
         outer.addWidget(card)
 
+        self._card_layout = card_layout
+        self._content = content
+
+    def set_content(self, new_content: QWidget) -> None:
+        self._card_layout.removeWidget(self._content)
+        self._content.hide()
+        self._content.deleteLater()
+
+        self._card_layout.addWidget(new_content)
+        new_content.show()
+        self._content = new_content
+
+        center_on_parent(self)
+
     def showEvent(self, event) -> None:
         super().showEvent(event)
         center_on_parent(self)

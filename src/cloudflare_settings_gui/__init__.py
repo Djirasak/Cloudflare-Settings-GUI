@@ -23,18 +23,30 @@ def main() -> None:
     app.setStyleSheet(build_stylesheet(check_icon_path))
     app.setWindowIcon(QIcon(str(resource_path("assets", "cloudflare_mark.svg"))))
 
-    window = FramelessWindow(MainPage(), title="Cloudflare Settings GUI", initial_size=(1440, 900))
+    main_page = MainPage()
+    window = FramelessWindow(main_page, title="Cloudflare Settings GUI", initial_size=(1440, 900))
     window.show()
 
     def show_auth_dialog() -> None:
-        has_saved_credentials = all(load_credentials().values())
+        saved = load_credentials()
+        has_saved_credentials = all(saved.values())
         auth_content = PermissionLoadingPage() if has_saved_credentials else PermissionConfigPage()
         auth_dialog = AuthFlowDialog(auth_content, parent=window)
 
+        def finish(account_id: str, api_token: str) -> None:
+            main_page.load_domains(account_id, api_token)
+            auth_dialog.accept()
+
+        def show_permission_loading(account_id: str, api_token: str) -> None:
+            loading_page = PermissionLoadingPage()
+            loading_page.finished.connect(lambda: finish(account_id, api_token))
+            auth_dialog.set_content(loading_page)
+
         if isinstance(auth_content, PermissionLoadingPage):
-            auth_content.finished.connect(auth_dialog.accept)
+            auth_content.finished.connect(lambda: finish(saved["account_id"], saved["api_token"]))
         else:
-            auth_content.continue_requested.connect(auth_dialog.accept)
+            auth_content.continue_requested.connect(show_permission_loading)
+            auth_content.close_requested.connect(app.quit)
 
         auth_dialog.show()
 

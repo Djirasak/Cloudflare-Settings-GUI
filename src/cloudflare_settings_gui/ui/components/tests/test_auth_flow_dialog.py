@@ -10,7 +10,7 @@ class TestAuthFlowDialog:
         qtbot.addWidget(dialog)
 
         assert dialog.isModal() is True
-        assert content.isVisible() is False  # not shown yet
+        assert content.isVisible() is False
 
         dialog.show()
         assert content.isVisible() is True

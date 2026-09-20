@@ -92,6 +92,78 @@ QLabel#statusPending {
     color: #9aa0a8;
 }
 
+QWidget#mainLeftPanel {
+    background-color: transparent;
+}
+
+QWidget#mainSidePanel {
+    background-color: #1a1d22;
+    border-left: 1px solid #2a2e35;
+}
+
+QListWidget#domainList {
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+QListWidget#domainList::item {
+    padding: 4px 0px;
+    border: none;
+}
+
+QFrame#domainCard {
+    background-color: #1a1d22;
+    border: 1px solid #2a2e35;
+    border-radius: 12px;
+}
+
+QFrame#domainCard[active="true"] {
+    border: 1px solid #3ddc84;
+}
+
+QLabel#domainName {
+    color: #e6e8eb;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+QLabel#statusBadgeActive {
+    background-color: rgba(61, 220, 132, 0.15);
+    color: #3ddc84;
+    border-radius: 8px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+QLabel#statusBadgePending {
+    background-color: rgba(154, 160, 168, 0.15);
+    color: #9aa0a8;
+    border-radius: 8px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+QLabel#toast {
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+QLabel#toastSuccess {
+    background-color: #17301f;
+    color: #3ddc84;
+    border-top: 1px solid #234a2e;
+}
+
+QLabel#toastError {
+    background-color: #3a1c1c;
+    color: #ff6b6b;
+    border-top: 1px solid #5a2a2a;
+}
+
 QLabel#permissionRow {
     color: #3ddc84;
     font-size: 13px;
