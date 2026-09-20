@@ -1,4 +1,4 @@
-APP_STYLESHEET = """
+_APP_STYLESHEET_TEMPLATE = """
 QWidget {
     background-color: #14161a;
     color: #e6e8eb;
@@ -92,6 +92,109 @@ QLabel#statusPending {
     color: #9aa0a8;
 }
 
+QLabel#permissionRow {
+    color: #3ddc84;
+    font-size: 13px;
+}
+
+QLabel#dialogTitle {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e6e8eb;
+}
+
+QCheckBox {
+    background-color: transparent;
+    color: #9aa0a8;
+    font-size: 13px;
+    spacing: 8px;
+}
+
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #3a3f47;
+    border-radius: 4px;
+    background-color: #21242a;
+}
+
+QCheckBox::indicator:hover {
+    border: 1px solid #f6821f;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #f6821f;
+    border: 1px solid #f6821f;
+    image: url({check_icon_path});
+}
+
+QProgressBar#spinner {
+    background-color: #21242a;
+    border: none;
+    border-radius: 2px;
+}
+
+QProgressBar#spinner::chunk {
+    background-color: #f6821f;
+    border-radius: 2px;
+}
+
+QScrollBar:vertical {
+    background: transparent;
+    width: 10px;
+    margin: 2px 0px 2px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: #3a3f47;
+    border-radius: 5px;
+    min-height: 24px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #4a5058;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+    background: none;
+    border: none;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+QScrollBar:horizontal {
+    background: transparent;
+    height: 10px;
+    margin: 0px 2px 0px 2px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #3a3f47;
+    border-radius: 5px;
+    min-width: 24px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #4a5058;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0px;
+    background: none;
+    border: none;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
 QLineEdit {
     background-color: #21242a;
     border: 1px solid #2f333b;
@@ -145,3 +248,7 @@ QPushButton#secondary:disabled {
     color: #5b6069;
 }
 """
+
+
+def build_stylesheet(check_icon_path: str) -> str:
+    return _APP_STYLESHEET_TEMPLATE.replace("{check_icon_path}", check_icon_path)
