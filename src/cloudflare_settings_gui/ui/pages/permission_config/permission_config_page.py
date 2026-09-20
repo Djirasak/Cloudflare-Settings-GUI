@@ -1,5 +1,8 @@
-from PyQt6.QtCore import Qt, QTimer
+import os
+
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
+    QCheckBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -8,11 +11,23 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from cloudflare_settings_gui.credentials import clear_credentials, load_credentials, save_credentials
+from cloudflare_settings_gui.ui.pages.permission_config.components.permissions_dialog import PermissionsDialog
+
 MOCK_VERIFY_DELAY_MS = 600
 MOCK_ZONE_COUNT = 5
+MOCK_PERMISSIONS = [
+    "อ่านรายการโซน (Zone Read)",
+    "แก้ไขการตั้งค่า DNS (DNS Edit)",
+    "อ่าน/แก้ไขกฎ Firewall (Firewall Services Edit)",
+    "อ่านการตั้งค่า SSL/TLS (SSL and Certificates Read)",
+    "ล้างแคช (Cache Purge)",
+]
 
 
-class AuthenticationPage(QWidget):
+class PermissionConfigPage(QWidget):
+    continue_requested = pyqtSignal()
+
     def __init__(self) -> None:
         super().__init__()
         self.setObjectName("page")
@@ -24,10 +39,20 @@ class AuthenticationPage(QWidget):
         self._verify_button = QPushButton("ตรวจสอบสิทธิ์")
         self._continue_button = QPushButton("ดำเนินการต่อ")
         self._status_label = QLabel()
+        self._remember_checkbox = QCheckBox("จดจำข้อมูลนี้ไว้ในเครื่องนี้")
 
         self._build_ui()
+        self._prefill_saved_credentials()
         self._verify_button.clicked.connect(self._on_verify_clicked)
         self._continue_button.clicked.connect(self._on_continue_clicked)
+
+    def _prefill_saved_credentials(self) -> None:
+        saved = load_credentials()
+
+        self._email_input.setText(saved["email"] or os.environ.get("CLOUDFLARE_EMAIL", ""))
+        self._account_id_input.setText(saved["account_id"] or os.environ.get("CLOUDFLARE_ACCOUNT_ID", ""))
+        self._token_input.setText(saved["api_token"] or os.environ.get("CLOUDFLARE_API_TOKEN", ""))
+        self._remember_checkbox.setChecked(any(saved.values()))
 
     def _build_ui(self) -> None:
         layout = QVBoxLayout(self)
@@ -58,6 +83,8 @@ class AuthenticationPage(QWidget):
         self._continue_button.setObjectName("secondary")
         self._continue_button.setEnabled(False)
 
+        self._remember_checkbox.setCursor(Qt.CursorShape.PointingHandCursor)
+
         button_row = QHBoxLayout()
         button_row.setSpacing(12)
         button_row.addWidget(self._verify_button)
@@ -69,6 +96,7 @@ class AuthenticationPage(QWidget):
         layout.addLayout(self._field_group("อีเมล", self._email_input))
         layout.addLayout(self._field_group("Account ID", self._account_id_input))
         layout.addLayout(self._field_group("API Token", self._token_input))
+        layout.addWidget(self._remember_checkbox)
         layout.addWidget(self._status_label)
         layout.addSpacing(4)
         layout.addLayout(button_row)
@@ -102,7 +130,10 @@ class AuthenticationPage(QWidget):
         self._continue_button.setEnabled(False)
         self._set_status("กำลังตรวจสอบสิทธิ์...", "statusPending")
 
-        QTimer.singleShot(MOCK_VERIFY_DELAY_MS, self._on_verify_result)
+        timer = QTimer(self)
+        timer.setSingleShot(True)
+        timer.timeout.connect(self._on_verify_result)
+        timer.start(MOCK_VERIFY_DELAY_MS)
 
     def _on_verify_result(self) -> None:
         self._verify_button.setEnabled(True)
@@ -112,5 +143,17 @@ class AuthenticationPage(QWidget):
         )
         self._continue_button.setEnabled(True)
 
+        if self._remember_checkbox.isChecked():
+            save_credentials(
+                self._email_input.text().strip(),
+                self._account_id_input.text().strip(),
+                self._token_input.text().strip(),
+            )
+        else:
+            clear_credentials()
+
+        self._permissions_dialog = PermissionsDialog(MOCK_PERMISSIONS, parent=self)
+        self._permissions_dialog.show()
+
     def _on_continue_clicked(self) -> None:
-        print("ดำเนินการต่อ: ยังไม่มีหน้าโซน (จะทำในรอบถัดไป)")
+        self.continue_requested.emit()
