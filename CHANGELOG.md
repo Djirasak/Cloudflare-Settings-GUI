@@ -6,7 +6,9 @@
 
 - Bundled Sarabun (Google Fonts, OFL-licensed) as the app font — Segoe UI's
   Thai glyphs looked rough by comparison. Regular/SemiBold/Bold weights are
-  loaded from `assets/fonts/` at startup via `QFontDatabase`
+  loaded from `assets/fonts/` at startup via `QFontDatabase`. Its taller
+  vowel/tone marks were getting clipped at the top of `QLineEdit`/
+  `QPushButton`, so their vertical padding was bumped to give them room
 - Custom frameless, resizable main window with drag-to-move, edge resizing, and
   Windows Aero Snap (drag to the top edge to maximize, left/right edge to split
   the screen)
