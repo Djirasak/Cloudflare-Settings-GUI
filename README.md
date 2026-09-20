@@ -16,28 +16,6 @@ A native-feeling Windows desktop app for viewing and managing Cloudflare zone se
 - **`.env` support for local dev** — seed `CLOUDFLARE_EMAIL` / `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN` once and stop retyping them
 - **Real Cloudflare API layer** — a typed gateway/facade over the official `cloudflare` SDK, fully unit-tested against mocks (not yet wired into the UI — see [Roadmap](#-roadmap))
 
-## 📸 What it looks like today
-
-A modal permission-check dialog floats over the main window on launch, wired up either to a manual credential form or an auto "verifying with saved credentials" spinner:
-
-```
-┌──────────────────────────────────────┐
-│ ☁  Cloudflare Settings GUI      – □ ✕ │
-├──────────────────────────────────────┤
-│                                       │
-│   Cloudflare Settings GUI            │
-│   กรอกข้อมูลบัญชี Cloudflare...        │
-│                                       │
-│   อีเมล        [______________]      │
-│   Account ID   [______________]      │
-│   API Token    [______________]      │
-│                                       │
-│   ☑ จดจำข้อมูลนี้ไว้ในเครื่องนี้        │
-│                                       │
-│   [ ตรวจสอบสิทธิ์ ]  [ ดำเนินการต่อ ]  │
-└──────────────────────────────────────┘
-```
-
 ## 🚀 Getting started
 
 Requires [uv](https://docs.astral.sh/uv/) and Python 3.13.
@@ -72,26 +50,6 @@ uv run ruff check .    # lint
 Tests live next to the code they cover — every package has its own `tests/` folder — so adding a test is always a matter of "does this folder have a `tests/` dir yet?"
 
 CI runs both on every push via GitHub Actions (`.github/workflows/ci.yml`).
-
-## 🗂️ Project layout
-
-```
-src/cloudflare_settings_gui/
-├── credentials.py              # OS keyring read/write/clear
-├── services/cloudflare/
-│   ├── gateway.py              # thin wrapper over the Cloudflare SDK
-│   └── facade.py               # app-facing API, translates SDK errors into results
-└── ui/
-    ├── components/              # reusable, page-agnostic building blocks
-    │   ├── frameless_window.py  # resizable shell: drag, resize, snap, maximize
-    │   ├── title_bar.py         # custom title bar + edge-snap logic
-    │   ├── shadow_card.py       # rounded, drop-shadowed card used by windows/dialogs
-    │   └── auth_flow_dialog.py  # modal popup that hosts the login/loading flow
-    └── pages/                   # one folder per screen; page-specific pieces live inside
-        ├── permission_config/   # manual credential entry + verification
-        ├── permission_loading/  # spinner shown when auto-verifying saved creds
-        └── main/                # the screen behind the login modal
-```
 
 ## 🛣️ Roadmap
 
