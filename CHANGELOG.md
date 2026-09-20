@@ -6,13 +6,16 @@
 
 - Bundled Sarabun (Google Fonts, OFL-licensed) as the app font — Segoe UI's
   Thai glyphs looked rough by comparison. Regular/SemiBold/Bold weights are
-  loaded from `assets/fonts/` at startup via `QFontDatabase`. Its taller
-  vowel/tone marks were getting clipped at the top of `QLineEdit`s,
-  `QPushButton`s, and even auto-sized `QLabel`s (its reported font ascent is
-  too tight for its own combining marks — same clipping with Google's CDN
-  font files, so it's not specific to the source), fixed with extra vertical
-  padding on all three. `QPushButton` needed a lopsided top-heavy padding
-  (18px top / 10px bottom) — even padding still clipped the mark in practice
+  loaded from `assets/fonts/` at startup via `QFontDatabase`. Its tone/vowel
+  marks were getting clipped at the top of `QLineEdit`s, `QPushButton`s, and
+  even auto-sized `QLabel`s — its shipped `hhea`/`OS2` ascent (1068 units)
+  left too little headroom above its own combining marks (up to ~971 units,
+  before accounting for mark-attachment offsets), and the same clipping
+  happened with Google's CDN-served files too, so it wasn't a bad download.
+  CSS padding tweaks per widget type were unreliable (fixed one spot,
+  centering broke, still clipped elsewhere), so the font files themselves
+  were patched with `fonttools` to raise that ascent to 1300 units — the
+  real fix, and it needed no stylesheet padding hacks at all
 - Custom frameless, resizable main window with drag-to-move, edge resizing, and
   Windows Aero Snap (drag to the top edge to maximize, left/right edge to split
   the screen)

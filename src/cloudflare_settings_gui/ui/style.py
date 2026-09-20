@@ -12,7 +12,6 @@ QWidget#rootWindow {
 
 QLabel {
     background-color: transparent;
-    padding-top: 4px;
 }
 
 QFrame#windowCard {
@@ -272,7 +271,7 @@ QLineEdit {
     background-color: #21242a;
     border: 1px solid #2f333b;
     border-radius: 10px;
-    padding: 14px 14px;
+    padding: 11px 14px;
     color: #e6e8eb;
     selection-background-color: #f6821f;
 }
@@ -286,7 +285,7 @@ QPushButton {
     color: #14161a;
     border: none;
     border-radius: 10px;
-    padding: 18px 18px 10px 18px;
+    padding: 11px 18px;
     font-weight: 600;
 }
 
