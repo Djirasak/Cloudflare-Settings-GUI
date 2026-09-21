@@ -27,6 +27,11 @@ class AuthFlowDialog(QDialog):
         self._content = content
 
     def set_content(self, new_content: QWidget) -> None:
+        # Hide/show around the resize to avoid a broken UpdateLayeredWindowIndirect dirty rect on Windows.
+        was_visible = self.isVisible()
+        if was_visible:
+            self.hide()
+
         self._card_layout.removeWidget(self._content)
         self._content.hide()
         self._content.deleteLater()
@@ -36,6 +41,8 @@ class AuthFlowDialog(QDialog):
         self._content = new_content
 
         center_on_parent(self)
+        if was_visible:
+            self.show()
 
     def showEvent(self, event) -> None:
         super().showEvent(event)

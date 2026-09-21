@@ -135,6 +135,11 @@
 - `cleanup` crashed with `UnicodeEncodeError` on Windows terminals using a
   legacy codepage (cmd.exe, some Git Bash setups) because its confirmation
   message is in Thai — fixed by reconfiguring stdout to UTF-8 first
+- `AuthFlowDialog.set_content()` (swapping between the config/loading/error
+  screens) logged `UpdateLayeredWindowIndirect failed` and ghosted on Windows
+  — the translucent frameless dialog's incremental resize produced an invalid
+  dirty rect. Fixed by hiding and reshowing the dialog around the swap so
+  Windows builds a fresh layered surface instead
 
 ### Known limitations
 

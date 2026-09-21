@@ -15,6 +15,29 @@ class TestAuthFlowDialog:
         dialog.show()
         assert content.isVisible() is True
 
+    def test_set_content_swaps_widget_and_stays_visible(self, qtbot):
+        content = QLabel("auth content")
+        dialog = AuthFlowDialog(content)
+        qtbot.addWidget(dialog)
+        dialog.show()
+
+        new_content = QLabel("next step")
+        dialog.set_content(new_content)
+
+        assert dialog.isVisible() is True
+        assert new_content.isVisible() is True
+        assert content.isVisible() is False
+
+    def test_set_content_before_show_does_not_show_dialog(self, qtbot):
+        content = QLabel("auth content")
+        dialog = AuthFlowDialog(content)
+        qtbot.addWidget(dialog)
+
+        new_content = QLabel("next step")
+        dialog.set_content(new_content)
+
+        assert dialog.isVisible() is False
+
     def test_centers_on_parent_window(self, qtbot):
         parent = QWidget()
         parent.setGeometry(100, 100, 400, 300)
