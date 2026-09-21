@@ -33,9 +33,11 @@ class TestTitleBarMaximizeIcon:
 class TestTitleBarEdgeSnapping:
     def _drag(self, qtbot, title_bar, start_local: QPoint, target_global: QPoint) -> None:
         qtbot.mousePress(title_bar, Qt.MouseButton.LeftButton, pos=start_local)
-        target_local = title_bar.mapFromGlobal(target_global)
-        qtbot.mouseMove(title_bar, pos=target_local)
-        qtbot.mouseRelease(title_bar, Qt.MouseButton.LeftButton, pos=target_local)
+        # Recompute the local point for each step: mouseMoveEvent moves the window (mirroring a
+        # real drag), so a local point mapped before that move overshoots once re-globalized
+        # against the window's new position — often onto another monitor.
+        qtbot.mouseMove(title_bar, pos=title_bar.mapFromGlobal(target_global))
+        qtbot.mouseRelease(title_bar, Qt.MouseButton.LeftButton, pos=title_bar.mapFromGlobal(target_global))
 
     def test_dragging_to_top_edge_maximizes_window(self, qtbot):
         window, title_bar = _make_window(qtbot)

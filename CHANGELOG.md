@@ -158,6 +158,15 @@
   `waitForDone()` while holding the GIL the worker thread needs to finish,
   deadlocking. Switched both to the shared `QThreadPool.globalInstance()`,
   which outlives any single widget
+- `TestTitleBarEdgeSnapping::test_dragging_to_left_edge_snaps_to_left_half`
+  failed deterministically on a multi-monitor dev machine. Its `_drag` test
+  helper mapped the release position's screen coordinate to a local point
+  once, before the simulated drag — but `TitleBar.mouseMoveEvent` actually
+  moves the window (mirroring a real drag), so that stale local point
+  overshot onto the second monitor once re-globalized against the window's
+  new position at release time, landing outside both screens' snap
+  thresholds. Fixed by recomputing the local point immediately before each
+  of the move and release events
 
 ### Known limitations
 
