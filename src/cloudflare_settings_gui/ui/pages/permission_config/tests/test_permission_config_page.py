@@ -16,6 +16,14 @@ class TestPermissionConfigPage:
         assert page._status_label.objectName() == "statusPending"
         assert page._continue_button.isEnabled() is True
 
+    def test_initial_error_is_shown_when_provided(self, qtbot):
+        page = PermissionConfigPage(initial_error="API token ขาดสิทธิ์ที่จำเป็น")
+        qtbot.addWidget(page)
+        page.show()
+
+        assert page._status_label.objectName() == "statusError"
+        assert page._status_label.text() == "API token ขาดสิทธิ์ที่จำเป็น"
+
     def test_continue_with_empty_fields_shows_error(self, qtbot):
         page = self._make_page(qtbot)
 

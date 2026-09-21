@@ -1,0 +1,18 @@
+REQUIRED_PERMISSION_NAMES = [
+    "Zone Settings Write",
+    "Zone Read",
+    "DNS Read",
+    "Zone Write",
+    "Cache Purge",
+    "DNS Write",
+    "API Tokens Write",
+    "API Tokens Read",
+    "Account API Tokens Write",
+    "Account API Tokens Read",
+    "Cloudflare Tunnel Write",
+    "Cloudflare Tunnel Read",
+    "Zero Trust Read",
+    "Zero Trust Write",
+    "Account Settings Write",
+    "Account Settings Read",
+]

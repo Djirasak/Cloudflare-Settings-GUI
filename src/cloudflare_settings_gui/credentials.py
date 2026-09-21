@@ -5,6 +5,7 @@ import keyring.errors
 
 SERVICE_NAME = "cloudflare-settings-gui"
 _FIELDS = ("email", "account_id", "api_token")
+_TOKEN_ID_FIELD = "token_id"
 
 
 def save_credentials(email: str, account_id: str, api_token: str) -> None:
@@ -17,8 +18,16 @@ def load_credentials() -> dict[str, str]:
     return {field: keyring.get_password(SERVICE_NAME, field) or "" for field in _FIELDS}
 
 
+def save_token_id(token_id: str) -> None:
+    keyring.set_password(SERVICE_NAME, _TOKEN_ID_FIELD, token_id)
+
+
+def load_token_id() -> str:
+    return keyring.get_password(SERVICE_NAME, _TOKEN_ID_FIELD) or ""
+
+
 def clear_credentials() -> None:
-    for field in _FIELDS:
+    for field in (*_FIELDS, _TOKEN_ID_FIELD):
         try:
             keyring.delete_password(SERVICE_NAME, field)
         except keyring.errors.PasswordDeleteError:

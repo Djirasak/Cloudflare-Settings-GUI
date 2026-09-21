@@ -3,7 +3,9 @@ import json
 import httpx
 from cloudflare import Cloudflare
 from cloudflare.types.accounts.account import Account
+from cloudflare.types.shared.token import Token
 from cloudflare.types.user.token_verify_response import TokenVerifyResponse
+from cloudflare.types.zero_trust.tunnel_list_response import TunnelListResponse
 from cloudflare.types.zones.zone import Zone
 
 _RESET = "\033[0m"
@@ -63,11 +65,17 @@ class CloudflareGateway:
     def verify_token(self) -> TokenVerifyResponse | None:
         return self._client.user.tokens.verify()
 
+    def list_tokens(self) -> list[Token]:
+        return list(self._client.user.tokens.list())
+
     def get_account(self, account_id: str) -> Account | None:
         return self._client.accounts.get(account_id=account_id)
 
     def list_zones(self, account_id: str) -> list[Zone]:
         return list(self._client.zones.list(account={"id": account_id}))
+
+    def list_tunnels(self, account_id: str) -> list[TunnelListResponse]:
+        return list(self._client.zero_trust.tunnels.list(account_id=account_id))
 
     def set_development_mode(self, zone_id: str, enabled: bool) -> None:
         value = "on" if enabled else "off"

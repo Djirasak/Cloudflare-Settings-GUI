@@ -169,6 +169,16 @@ QLabel#permissionRow {
     font-size: 13px;
 }
 
+QLabel#permissionRowGranted {
+    color: #3ddc84;
+    font-size: 12px;
+}
+
+QLabel#permissionRowMissing {
+    color: #ff6b6b;
+    font-size: 12px;
+}
+
 QLabel#dialogTitle {
     font-size: 15px;
     font-weight: 600;

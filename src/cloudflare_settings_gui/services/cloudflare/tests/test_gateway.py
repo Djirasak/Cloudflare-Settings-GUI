@@ -27,6 +27,17 @@ class TestCloudflareGateway:
             mock_client.accounts.get.assert_called_once_with(account_id="account-123")
             assert result == "account-obj"
 
+    def test_list_tokens_calls_sdk_user_tokens_list(self):
+        with patch("cloudflare_settings_gui.services.cloudflare.gateway.Cloudflare") as mock_client_cls:
+            mock_client = mock_client_cls.return_value
+            mock_client.user.tokens.list.return_value = ["token1", "token2"]
+
+            gateway = CloudflareGateway(api_token="token-abc")
+            result = gateway.list_tokens()
+
+            mock_client.user.tokens.list.assert_called_once_with()
+            assert result == ["token1", "token2"]
+
     def test_list_zones_calls_sdk_zones_list(self):
         with patch("cloudflare_settings_gui.services.cloudflare.gateway.Cloudflare") as mock_client_cls:
             mock_client = mock_client_cls.return_value
@@ -37,6 +48,17 @@ class TestCloudflareGateway:
 
             mock_client.zones.list.assert_called_once_with(account={"id": "account-123"})
             assert result == ["zone1", "zone2"]
+
+    def test_list_tunnels_calls_sdk_zero_trust_tunnels_list(self):
+        with patch("cloudflare_settings_gui.services.cloudflare.gateway.Cloudflare") as mock_client_cls:
+            mock_client = mock_client_cls.return_value
+            mock_client.zero_trust.tunnels.list.return_value = ["tunnel1", "tunnel2"]
+
+            gateway = CloudflareGateway(api_token="token-abc")
+            result = gateway.list_tunnels("account-123")
+
+            mock_client.zero_trust.tunnels.list.assert_called_once_with(account_id="account-123")
+            assert result == ["tunnel1", "tunnel2"]
 
     def test_set_development_mode_calls_sdk_settings_edit(self):
         with patch("cloudflare_settings_gui.services.cloudflare.gateway.Cloudflare") as mock_client_cls:

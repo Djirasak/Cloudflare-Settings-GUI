@@ -2,7 +2,13 @@ import keyring
 import keyring.errors
 import pytest
 
-from cloudflare_settings_gui.credentials import clear_credentials, load_credentials, save_credentials
+from cloudflare_settings_gui.credentials import (
+    clear_credentials,
+    load_credentials,
+    load_token_id,
+    save_credentials,
+    save_token_id,
+)
 
 
 class TestCredentials:
@@ -47,3 +53,18 @@ class TestCredentials:
 
     def test_clear_credentials_is_safe_when_nothing_saved(self):
         clear_credentials()
+
+    def test_save_and_load_token_id_round_trip(self):
+        save_token_id("token-id-123")
+
+        assert load_token_id() == "token-id-123"
+
+    def test_load_token_id_without_saved_value_returns_empty_string(self):
+        assert load_token_id() == ""
+
+    def test_clear_credentials_removes_saved_token_id(self):
+        save_token_id("token-id-123")
+
+        clear_credentials()
+
+        assert load_token_id() == ""

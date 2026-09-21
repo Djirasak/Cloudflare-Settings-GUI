@@ -5,7 +5,7 @@ from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QFontDatabase, QIcon
 from PyQt6.QtWidgets import QApplication
 
-from cloudflare_settings_gui.credentials import load_credentials
+from cloudflare_settings_gui.credentials import clear_credentials, load_credentials
 from cloudflare_settings_gui.resources import resource_path
 from cloudflare_settings_gui.ui.components.auth_flow_dialog import AuthFlowDialog
 from cloudflare_settings_gui.ui.components.frameless_window import FramelessWindow
@@ -36,20 +36,34 @@ def main() -> None:
     def show_auth_dialog() -> None:
         saved = load_credentials()
         has_saved_credentials = all(saved.values())
-        auth_content = PermissionLoadingPage() if has_saved_credentials else PermissionConfigPage()
+        auth_content = (
+            PermissionLoadingPage(saved["account_id"], saved["api_token"])
+            if has_saved_credentials
+            else PermissionConfigPage()
+        )
         auth_dialog = AuthFlowDialog(auth_content, parent=window)
 
         def finish(account_id: str, api_token: str) -> None:
-            main_page.load_domains(account_id, api_token)
+            main_page.load_account_data(account_id, api_token)
             auth_dialog.accept()
 
+        def show_permission_config(initial_error: str) -> None:
+            # Drop saved credentials so we don't silently retry the same bad token next launch.
+            clear_credentials()
+            config_page = PermissionConfigPage(initial_error)
+            config_page.continue_requested.connect(show_permission_loading)
+            config_page.close_requested.connect(app.quit)
+            auth_dialog.set_content(config_page)
+
         def show_permission_loading(account_id: str, api_token: str) -> None:
-            loading_page = PermissionLoadingPage()
+            loading_page = PermissionLoadingPage(account_id, api_token)
             loading_page.finished.connect(lambda: finish(account_id, api_token))
+            loading_page.failed.connect(show_permission_config)
             auth_dialog.set_content(loading_page)
 
         if isinstance(auth_content, PermissionLoadingPage):
             auth_content.finished.connect(lambda: finish(saved["account_id"], saved["api_token"]))
+            auth_content.failed.connect(show_permission_config)
         else:
             auth_content.continue_requested.connect(show_permission_loading)
             auth_content.close_requested.connect(app.quit)

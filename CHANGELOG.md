@@ -23,7 +23,23 @@
 - Permission Config page — enter email, Account ID, and API Token to verify
   Cloudflare access
 - Permission Loading page — silently re-verifies saved credentials behind a
-  spinner and skips straight past the login screen
+  spinner and skips straight past the login screen. Verification runs as
+  three visible, sequential steps, each ticking green (✓) or red (✗) as it
+  resolves — later steps stay in a neutral pending state until reached:
+  1. **ตรวจสอบ API Token** — `user.tokens.verify()` for an active status
+  2. **ตรวจสอบ Account** — `accounts.get()` confirms the entered Account ID
+  3. **ตรวจสอบสิทธิ์ (Permission)** — `user.tokens.list()` finds this app's
+     own personal API Token by name (must start with `xgui_` or `gui_`,
+     case-insensitive — a user can hold several tokens), then lists every
+     permission from the fixed set in `services/cloudflare/permissions.py`
+     as its own green/red row, checked against the token's actual
+     `permission_groups`
+  The found token's id is cached via `keyring` for later reuse.
+  `CloudflareFacade.check_credentials()` was split into `check_token()`,
+  `check_account()`, and `check_permissions()` so the page can dispatch and
+  render each step independently. A failure at any step clears the saved
+  credentials and bounces back to the Permission Config page with the reason
+  shown, after a brief pause so the checklist's final state is visible first
 - "Remember me" credential storage via the OS keyring (Windows Credential
   Manager), with `.env` support as a local-dev convenience fallback
 - `services/cloudflare` — a gateway wrapping the official Cloudflare SDK and a
@@ -88,8 +104,8 @@
 - Permission Config page no longer has a separate "ตรวจสอบสิทธิ์" (verify)
   step — entering credentials and clicking "ดำเนินการต่อ" (continue) goes
   straight to the Permission Loading page, which now performs the
-  verification (still mocked, per the known limitation below) — the found
-  permissions are no longer shown in a popup along the way
+  verification — the found permissions are no longer shown in a popup along
+  the way
 - Main page's domain sidebar split out of `main_page.py` into
   `ui/pages/main/partials/domain_sidebar.py` (the page section — owns its own
   data, loading state, and API calls) and
@@ -122,6 +138,7 @@
 
 ### Known limitations
 
-- `services/cloudflare`'s credential *verification* is not yet wired into
-  `PermissionLoadingPage` — the verify step and permissions popup still use
-  mock data (domain listing on the main page does use the real API)
+- `PermissionsDialog` (the "สิทธิ์การเข้าถึงที่ตรวจพบ" popup listing detected
+  permissions) is built and tested but not wired into the app anywhere —
+  nothing yet turns a verified token's permission groups into the list it
+  expects

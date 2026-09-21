@@ -17,7 +17,7 @@ class PermissionConfigPage(QWidget):
     continue_requested = pyqtSignal(str, str)  # account_id, api_token
     close_requested = pyqtSignal()
 
-    def __init__(self) -> None:
+    def __init__(self, initial_error: str = "") -> None:
         super().__init__()
         self.setObjectName("page")
         self.setMinimumWidth(420)
@@ -32,6 +32,8 @@ class PermissionConfigPage(QWidget):
 
         self._build_ui()
         self._prefill_saved_credentials()
+        if initial_error:
+            self._set_status(initial_error, "statusError")
         self._close_button.clicked.connect(self.close_requested.emit)
         self._continue_button.clicked.connect(self._on_continue_clicked)
 
