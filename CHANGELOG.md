@@ -71,7 +71,7 @@
 - "ปิดโปรแกรม" (close) button on the Permission Config page — previously the
   only way out of that screen was killing the process, since it's a modal
   popup with no title bar
-- Main page now shows a real 80/20 two-panel layout: the right sidebar lists
+- Main page now shows a real 70/30 two-panel layout: the right sidebar lists
   the Cloudflare domains on the verified account as cards (live API data, no
   more mock), the left panel is reserved empty for future use
 - Each domain card now has a "Development Mode" toggle and a "ล้างแคช" (purge
@@ -79,7 +79,7 @@
 - Toast component (`ui/components/toast.py`) — a dismissible bar docked at
   the bottom of the main page that shows success/error feedback for domain
   card actions (dev mode toggle, purge cache) and auto-hides after 3s.
-  `DomainSidebarPartial` raises an `action_feedback` signal for these instead
+  `RightPanelPartial` raises an `action_feedback` signal for these instead
   of writing them into its own top-of-panel status label
 - `ToggleSwitch` component (`ui/components/toggle_switch.py`) — a custom
   pill-shaped on/off switch used for the domain card's Development Mode
@@ -87,6 +87,17 @@
 - Domain card's status is a colored pill badge shown above the domain name,
   and the card's border matches the same color as the badge (green for
   `active`, gray otherwise)
+- Main page's left panel is now a tabbed layout (`LeftPanelPartial`,
+  `ui/pages/main/partials/left_panel.py`), styled to match the app's dark
+  theme. First tab is "Tunnel", backed by its own `TunnelsPartial`
+  (`ui/pages/main/partials/tunnels.py`); "DDNS" is still an inline
+  placeholder pending the same treatment, currently showing "เร็ว ๆ นี้"
+- Tunnel tab lists the account's real Cloudflare Tunnels (name and status)
+  via `zero_trust.tunnels.list()` — `CloudflareGateway.list_tunnels()` and
+  `CloudflareFacade.list_tunnels()` follow the same gateway/facade/
+  `TunnelInfo`/`TunnelListResult` shape as the existing domain list.
+  `MainPage.load_domains()` was renamed to `load_account_data()` since it
+  now kicks off both the domain list and the tunnel list on successful login
 
 ### Changed
 
@@ -107,8 +118,9 @@
   verification — the found permissions are no longer shown in a popup along
   the way
 - Main page's domain sidebar split out of `main_page.py` into
-  `ui/pages/main/partials/domain_sidebar.py` (the page section — owns its own
-  data, loading state, and API calls) and
+  `ui/pages/main/partials/right_panel.py` (the page section — owns its own
+  data, loading state, and API calls; later renamed from `domain_sidebar.py`
+  to `right_panel.py`/`RightPanelPartial` to mirror the left panel) and
   `ui/pages/main/components/domain_card.py` (a dumb widget that only emits
   intent signals), so `main_page.py` stays a thin layout shell as more
   sections get added later
@@ -140,6 +152,12 @@
   — the translucent frameless dialog's incremental resize produced an invalid
   dirty rect. Fixed by hiding and reshowing the dialog around the swap so
   Windows builds a fresh layered surface instead
+- `RightPanelPartial` and `TunnelsPartial` each owned a `QThreadPool(self)` —
+  if the widget were destroyed while a worker was still in flight (e.g. app
+  quit during a slow request), the pool's destructor blocks on
+  `waitForDone()` while holding the GIL the worker thread needs to finish,
+  deadlocking. Switched both to the shared `QThreadPool.globalInstance()`,
+  which outlives any single widget
 
 ### Known limitations
 

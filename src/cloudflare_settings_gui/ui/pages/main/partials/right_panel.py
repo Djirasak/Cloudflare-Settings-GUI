@@ -12,7 +12,7 @@ from cloudflare_settings_gui.ui.components.worker import FacadeWorker
 from cloudflare_settings_gui.ui.pages.main.components.domain_card import DomainCard
 
 
-class DomainSidebarPartial(QWidget):
+class RightPanelPartial(QWidget):
     """The right-hand domain list — owns its own data, loading state, and API calls.
 
     Loading and every card action run on a QThreadPool worker so a slow request never
@@ -26,7 +26,11 @@ class DomainSidebarPartial(QWidget):
         self.setObjectName("mainSidePanel")
 
         self._api_token = ""
-        self._thread_pool = QThreadPool(self)
+        # Global pool, not one parented to this widget — parenting deadlocks the GIL if the widget
+        # is destroyed while a worker is still in flight.
+        thread_pool = QThreadPool.globalInstance()
+        assert thread_pool is not None
+        self._thread_pool = thread_pool
 
         self._status_label = QLabel("กำลังโหลดรายการโดเมน...")
         self._status_label.setObjectName("statusPending")

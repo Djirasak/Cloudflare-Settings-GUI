@@ -96,20 +96,54 @@ QWidget#mainLeftPanel {
     background-color: transparent;
 }
 
+QTabWidget#leftPanelTabs::pane {
+    background-color: transparent;
+    border: none;
+}
+
+QTabWidget#leftPanelTabs QTabBar::tab {
+    background-color: #1a1d22;
+    color: #9aa0a8;
+    border: 1px solid #2a2e35;
+    border-bottom: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 8px 18px;
+    margin-right: 4px;
+    font-weight: 600;
+}
+
+QTabWidget#leftPanelTabs QTabBar::tab:selected {
+    background-color: #21242a;
+    color: #f6821f;
+    border: 1px solid #f6821f;
+    border-bottom: none;
+}
+
+QTabWidget#leftPanelTabs QTabBar::tab:hover:!selected {
+    color: #e6e8eb;
+}
+
 QWidget#mainSidePanel {
     background-color: #1a1d22;
     border-left: 1px solid #2a2e35;
 }
 
-QListWidget#domainList {
+QListWidget#domainList,
+QListWidget#tunnelList {
     background-color: transparent;
     border: none;
     outline: none;
 }
 
-QListWidget#domainList::item {
+QListWidget#domainList::item,
+QListWidget#tunnelList::item {
     padding: 4px 0px;
     border: none;
+}
+
+QListWidget#tunnelList::item {
+    color: #e6e8eb;
 }
 
 QFrame#domainCard {
